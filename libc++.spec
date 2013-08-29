@@ -31,6 +31,8 @@ License: MIT
 Group: System/Libraries
 BuildRequires: clang >= %{version}
 BuildRequires: cmake
+# Actually just libsupc++
+BuildRequires: libstdc++-static-devel
 
 %track
 prog %{name} = {
