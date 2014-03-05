@@ -7,10 +7,10 @@
 %define devname %mklibname c++ -d
 
 Name: libc++
-Version: 3.3
+Version: 3.4
 %if "%{beta}" == ""
 %if "%{scmrev}" == ""
-Release: 5
+Release: 1
 Source: http://llvm.org/releases/%{version}/libcxx-%{version}.src.tar.gz
 %else
 Release: 0.%{scmrev}.1
@@ -72,7 +72,7 @@ Development files (Headers etc.) for %{name}.
 
 %prep
 %if "%{scmrev}" == ""
-%setup -q -n libcxx-%{version}%{beta}.src
+%setup -q -n libcxx-%{version}%{beta}
 %else
 %setup -q -n %{name}
 %endif
@@ -81,7 +81,7 @@ sed -i -e 's,DESTINATION lib,DESTINATION %{_lib},g' lib/CMakeLists.txt
 %endif
 mkdir build
 cd build
-C=clang CXX=clang++ cmake -G "Unix Makefiles" -DLIBCXX_CXX_ABI=libsupc++ -DLIBCXX_LIBSUPCXX_INCLUDE_PATHS="$(dirname $(find /usr/include/c++/[4-9]* -name thread));$(dirname $(find /usr/include/c++/[4-9]* -name bits |grep -v 32 |head -n1))" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} ..
+C=clang CXX=clang++ cmake -G "Unix Makefiles" -DLIBCXX_CXX_ABI=libsupc++ -DLIBCXX_LIBSUPCXX_INCLUDE_PATHS="$(dirname $(find /usr/include/c++/[4-9]* -name thread));$(dirname $(find /usr/include/c++/[4-9]* -name bits |grep -v 32 |grep -vE '[0-9]/bits' |head -n1))" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=%{_prefix} ..
 
 %build
 cd build
