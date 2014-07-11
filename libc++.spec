@@ -10,7 +10,7 @@ Name: libc++
 Version: 3.4
 %if "%{beta}" == ""
 %if "%{scmrev}" == ""
-Release: 2
+Release: 3
 Source: http://llvm.org/releases/%{version}/libcxx-%{version}.src.tar.gz
 %else
 Release: 0.%{scmrev}.1
