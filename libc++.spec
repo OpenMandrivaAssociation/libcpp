@@ -7,22 +7,22 @@
 %define devname %mklibname c++ -d
 
 Name: libc++
-Version: 3.4
+Version: 3.6
 %if "%{beta}" == ""
 %if "%{scmrev}" == ""
-Release: 4
-Source: http://llvm.org/releases/%{version}/libcxx-%{version}.src.tar.gz
+Release: 1
+Source0: http://llvm.org/releases/%{version}/libcxx-%{version}.tar.xz
 %else
 Release: 0.%{scmrev}.1
-Source: %{name}-%{scmrev}.tar.xz
+Source0: %{name}-%{scmrev}.tar.xz
 %endif
 %else
 %if "%{scmrev}" == ""
 Release: 0.%{beta}.1
-Source: %{name}-%{version}%{beta}.tar.bz2
+Source0: %{name}-%{version}%{beta}.tar.bz2
 %else
 Release: 0.%{beta}.%{scmrev}.1
-Source: %{name}-%{scmrev}.tar.xz
+Source0: %{name}-%{scmrev}.tar.xz
 %endif
 %endif
 Summary: An alternative implementation of the C++ STL
