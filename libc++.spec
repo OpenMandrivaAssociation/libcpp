@@ -10,7 +10,7 @@ Name: libc++
 Version: 3.6
 %if "%{beta}" == ""
 %if "%{scmrev}" == ""
-Release: 1
+Release: 2
 Source0: http://llvm.org/releases/%{version}/libcxx-%{version}.tar.xz
 %else
 Release: 0.%{scmrev}.1
@@ -66,6 +66,7 @@ Runtime library for the libc++ STL implementation
 Summary: Development files for %{name}
 Group: Development/C
 Requires: %{libname} = %{EVRD}
+Provides: c++-devel
 
 %description -n %{devname}
 Development files (Headers etc.) for %{name}.
