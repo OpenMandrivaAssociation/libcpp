@@ -27,6 +27,9 @@ BuildRequires: clang >= %{version}
 BuildRequires: cmake
 # Actually just libsupc++
 BuildRequires: libstdc++-static-devel
+# Make it buildable if the system libc is something other than glibc
+# and uClibc
+Patch0: libc++-3.7.0-musl-compat.patch
 
 %track
 prog %{name} = {
@@ -83,18 +86,21 @@ Static libraries for %{name}.
 
 %prep
 %setup -q -n libcxx-%{version}%{beta}.src -a 1
+%apply_patches
 TOP=`pwd`
 
 cd libcxxabi-%{version}%{beta}.src
 %cmake \
 	-DLIBCXXABI_LIBDIR_SUFFIX="$(echo %{_lib} | sed -e 's,^lib,,')" \
-	-DLIBCXXABI_LIBCXX_PATH="$TOP"
+	-DLIBCXXABI_LIBCXX_PATH="$TOP" \
+	-DLIBCXXABI_LIBCXX_INCLUDES="$TOP"/include
 cd ../..
 
 %cmake \
 	-DLIBCXX_CXX_ABI=libcxxabi \
 	-DLIBCXX_ENABLE_CXX1Y:BOOL=ON \
 	-DLIBCXX_CXX_ABI_INCLUDE_PATHS=$TOP/libcxxabi-%{version}%{beta}.src/include \
+	-DCMAKE_SHARED_LINKER_FLAGS="-L$TOP/libcxxabi-%{version}%{beta}.src/build/%{_lib}" \
 	-DLIBCXX_LIBDIR_SUFFIX="$(echo %{_lib} | sed -e 's,^lib,,')"
 cd ..
 
