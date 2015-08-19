@@ -2,22 +2,25 @@
 
 %define major 1
 %define beta %{nil}
-%define scmrev 240420
+%define scmrev 245328
 %define libname %mklibname c++ %{major}
 %define abilibname %mklibname c++abi %{major}
 %define devname %mklibname c++ -d
 %define staticname %mklibname c++ -d -s
+%define unwindlibname %mklibname unwind %{major}
 
 Name: libc++
 Version: 3.7.0
 %if "%{scmrev}" == ""
-Release: 2
+Release: 1
 Source0: http://llvm.org/releases/%{version}/libcxx-%{version}.src.tar.xz
 Source1: http://llvm.org/releases/%{version}/libcxxabi-%{version}.src.tar.xz
+Source2: http://llvm.org/releases/%{version}/libunwind-%{version}.src.tar.xz
 %else
 Release: 0.%{scmrev}.1
 Source0: libcxx-%{version}.src.tar.xz
 Source1: libcxxabi-%{version}.src.tar.xz
+Source2: libunwind-%{version}.src.tar.xz
 %endif
 Summary: An alternative implementation of the C++ STL
 URL: http://libcxx.llvm.org/
@@ -66,6 +69,13 @@ Group: System/Libraries
 %description -n %{abilibname}
 The libc++abi low level C++ runtime
 
+%package -n %{unwindlibname}
+Summary: The LLVM unwinding library
+Group: System/Libraries
+
+%description -n %{unwindlibname}
+The LLVM unwinding library
+
 %package -n %{devname}
 Summary: Development files for %{name}
 Group: Development/C
@@ -85,16 +95,33 @@ Requires: %{devname} = %{EVRD}
 Static libraries for %{name}.
 
 %prep
-%setup -q -n libcxx-%{version}%{beta}.src -a 1
+%setup -q -n libcxx-%{version}%{beta}.src -a 1 -a 2
 %apply_patches
 TOP=`pwd`
+
+cd libunwind-%{version}%{beta}.src
+%cmake \
+	-DLLVM_LIBDIR_SUFFIX="$(echo %{_lib} | sed -e 's,^lib,,')"
+cd ..
+mkdir static
+cd static
+%cmake \
+	-DLIBUNWIND_ENABLE_SHARED:BOOL=OFF \
+	-DLLVM_LIBDIR_SUFFIX="$(echo %{_lib} | sed -e 's,^lib,,')" \
+	../..
+cd ../../..
 
 cd libcxxabi-%{version}%{beta}.src
 %cmake \
 	-DLIBCXXABI_LIBDIR_SUFFIX="$(echo %{_lib} | sed -e 's,^lib,,')" \
 	-DLIBCXXABI_LIBCXX_PATH="$TOP" \
-	-DLIBCXXABI_LIBCXX_INCLUDES="$TOP"/include
+	-DLIBCXXABI_LIBCXX_INCLUDES="$TOP"/include \
+	-DLIBCXXABI_USE_LLVM_UNWINDER:BOOL=ON \
+	-DLIBCXXABI_LIBUNWIND_SOURCES="$TOP"/libunwind-%{version}%{beta}.src \
+	-DLIBCXXABI_LIBUNWIND_INCLUDES_INTERNAL="$TOP"/libunwind-%{version}%{beta}.src/include \
+	-DLIBCXXABI_SHARED_LINK_FLAGS=-L"$TOP"/libunwind-%{version}%{beta}.src/build/%{_lib}
 cd ../..
+
 
 %cmake \
 	-DLIBCXX_CXX_ABI=libcxxabi \
@@ -115,7 +142,13 @@ cd static
 	../..
 
 %build
-cd libcxxabi-%{version}%{beta}.src/build
+cd libunwind-%{version}%{beta}.src/static/build
+%make
+
+cd ../../build
+%make
+
+cd ../../libcxxabi-%{version}%{beta}.src/build
 %make
 
 cd ../../static/build
@@ -125,7 +158,13 @@ cd ../../build
 %make
 
 %install
-cd libcxxabi-%{version}%{beta}.src/build
+cd libunwind-%{version}%{beta}.src/static/build
+%makeinstall_std
+
+cd ../../build
+%makeinstall_std
+
+cd ../../libcxxabi-%{version}%{beta}.src/build
 %makeinstall_std
 
 cd ../../static/build
@@ -146,6 +185,9 @@ ln -sf ../../%{_lib}/libc++.so.%{major} libc++.so
 
 %files -n %{abilibname}
 /%{_lib}/libc++abi.so.%{major}*
+
+%files -n %{unwindlibname}
+/%{_lib}/libunwind.so.%{major}*
 
 %files -n %{devname}
 %{_includedir}/*
