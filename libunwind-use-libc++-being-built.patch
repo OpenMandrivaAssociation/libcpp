@@ -1,0 +1,12 @@
+--- libcxx-3.7.0.src/libunwind-3.7.0.src/src/CMakeLists.txt.omv~	2015-08-20 03:22:51.797816226 +0200
++++ libcxx-3.7.0.src/libunwind-3.7.0.src/src/CMakeLists.txt	2015-08-20 03:23:30.325822798 +0200
+@@ -96,6 +96,9 @@ string(REPLACE ";" " " LIBUNWIND_COMPILE
+ string(REPLACE ";" " " LIBUNWIND_CXX_FLAGS "${LIBUNWIND_CXX_FLAGS}")
+ string(REPLACE ";" " " LIBUNWIND_LINK_FLAGS "${LIBUNWIND_LINK_FLAGS}")
+ 
++# Use the headers from the version of libc++ we're about to build...
++include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../include)
++
+ set_target_properties(unwind
+                       PROPERTIES
+                         COMPILE_FLAGS "${CMAKE_COMPILE_FLAGS} ${LIBUNWIND_COMPILE_FLAGS}"

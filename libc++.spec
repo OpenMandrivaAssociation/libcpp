@@ -33,6 +33,8 @@ BuildRequires: libstdc++-static-devel
 # Make it buildable if the system libc is something other than glibc
 # and uClibc
 Patch0: libc++-3.7.0-musl-compat.patch
+# Allow bootstrapping without a compatible STL
+Patch1: libunwind-use-libc++-being-built.patch
 
 %track
 prog %{name} = {
