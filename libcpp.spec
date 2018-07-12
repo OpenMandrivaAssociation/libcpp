@@ -12,7 +12,7 @@
 Name: libc++
 Version: 3.7.0
 %if "%{scmrev}" == ""
-Release: 1
+Release: 2
 Source0: http://llvm.org/releases/%{version}/libcxx-%{version}.src.tar.xz
 Source1: http://llvm.org/releases/%{version}/libcxxabi-%{version}.src.tar.xz
 Source2: http://llvm.org/releases/%{version}/libunwind-%{version}.src.tar.xz
@@ -35,13 +35,6 @@ BuildRequires: libstdc++-static-devel
 Patch0: libc++-3.7.0-musl-compat.patch
 # Allow bootstrapping without a compatible STL
 Patch1: libunwind-use-libc++-being-built.patch
-
-%track
-prog %{name} = {
-	url = http://llvm.org/releases/download.html
-	regex = "Download LLVM (__VER__)"
-	version = %{version}
-}
 
 %description
 libc++ is a new implementation of the C++ standard library, targeting C++11.
