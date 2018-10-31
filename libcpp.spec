@@ -12,7 +12,7 @@
 Name: libc++
 Version: 3.7.0
 %if "%{scmrev}" == ""
-Release: 2
+Release: 3
 Source0: http://llvm.org/releases/%{version}/libcxx-%{version}.src.tar.xz
 Source1: http://llvm.org/releases/%{version}/libcxxabi-%{version}.src.tar.xz
 Source2: http://llvm.org/releases/%{version}/libunwind-%{version}.src.tar.xz
