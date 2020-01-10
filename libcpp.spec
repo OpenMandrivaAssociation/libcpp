@@ -91,7 +91,7 @@ Static libraries for %{name}.
 
 %prep
 %setup -q -n libcxx-%{version}%{beta}.src -a 1 -a 2
-%apply_patches
+%autopatch -p1
 TOP=`pwd`
 
 cd libunwind-%{version}%{beta}.src
