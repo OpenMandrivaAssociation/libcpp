@@ -23,7 +23,7 @@ Source1: libcxxabi-%{version}.src.tar.xz
 Source2: libunwind-%{version}.src.tar.xz
 %endif
 Summary: An alternative implementation of the C++ STL
-URL: http://libcxx.llvm.org/
+URL: https://libcxx.llvm.org/
 License: MIT
 Group: System/Libraries
 BuildRequires: clang >= %{version}
